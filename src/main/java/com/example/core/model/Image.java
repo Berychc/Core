@@ -7,19 +7,31 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "images")
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "images")
 public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "original_file_name")
+    private String originalFileName;
+
+    @Column(name = "file_size")
     private Long fileSize;
-    private String mediaType;
+
+    @Column(name = "content_type")
+    private String contentType;
 
     @Lob
     private byte[] data;
 }
+
+
+
