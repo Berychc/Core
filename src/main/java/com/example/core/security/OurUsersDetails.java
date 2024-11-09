@@ -1,7 +1,7 @@
 package com.example.core.security;
 
 import com.example.core.model.Users;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,17 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-public class UsersDetails implements UserDetails {
+@AllArgsConstructor
+public class OurUsersDetails implements UserDetails {
 
-    private Users user;
-
-    public UsersDetails(Users user) {
-        this.user = user;
-    }
+    private final Users user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
 
     @Override

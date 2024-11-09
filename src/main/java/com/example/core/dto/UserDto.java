@@ -18,5 +18,6 @@ public class UserDto {
     @NotBlank(message = "Password  не может быть пустым!")
     private String password;
 
+    @NotBlank(message = "Role не может быть пуста!")
     private Roles role;
 }

@@ -32,8 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .permitAll()
                 .and()
-                .exceptionHandling()
-                .accessDeniedPage("/403"); // Страница доступа запрещена (можно создать свою страницу)
+                .exceptionHandling();
     }
 
 //    @Bean
