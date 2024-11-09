@@ -8,50 +8,55 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Конфигурация безопасности приложения.
+ * Определяет настройки для аутентификации и авторизации пользователей.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * Конфигурация настроек HTTP безопасности.
+     *
+     * @param http объект HttpSecurity для настройки параметров безопасности.
+     * @throws Exception если возникает ошибка в процессе настройки.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf().disable() // Отключение защиты от CSRF
                 .authorizeRequests()
-                .antMatchers("/user/register").permitAll()
-                .antMatchers("/moderator/**").hasRole("MODERATOR")
-                .anyRequest().authenticated()
+                .antMatchers("/user/register").permitAll() // Разрешить доступ к регистрации без аутентификации
+                .antMatchers("/moderator/**").hasRole("MODERATOR") // Доступ только для модераторов
+                .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 .and()
                 .formLogin()
-                .permitAll()
+                .permitAll() // Разрешить доступ к форме входа для всех
                 .and()
-                .exceptionHandling();
+                .exceptionHandling(); // Обработка исключений
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        return http.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(auth -> auth
-//                        .antMatchers("/user/register").permitAll()
-//                        .antMatchers("/moderator/**").hasRole("MODERATOR")
-//                        .anyRequest().authenticated()
-//                )
-//                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
-//                .build();
-//    }
-
+    /**
+     * Бин, предоставляющий реализацию UserDetailsService для аутентификации пользователей.
+     *
+     * @return реализация UserDetailsService.
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         return new UsersDetailsService();
     }
 
+    /**
+     * Бин, предоставляющий аутентификационный провайдер.
+     *
+     * @return аутентификационный провайдер, который используется для аутентификации пользователей.
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -60,6 +65,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
+    /**
+     * Бин, предоставляющий кодировщик паролей.
+     *
+     * @return кодировщик паролей, используемый для шифрования паролей.
+     */
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
